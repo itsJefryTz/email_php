@@ -1,6 +1,13 @@
 {
     "require": {
         "symfony/routing": "^8.0",
-        "symfony/http-foundation": "^8.0"
+        "symfony/http-foundation": "^8.0",
+        "symfony/mailer": "^8.0"
+    },
+    "autoload": {
+        "files": [
+            "src/routes/apiRoutes.php",
+            "src/controllers/apiController.php"
+        ]
     }
 }
