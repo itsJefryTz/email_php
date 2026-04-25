@@ -25,8 +25,10 @@ function sendEmail(Request $request) {
 
   try {
     $data = $request->toArray();
-    $settingsData = $data['settings'] ?? null;
-    $emailData = $data['email'] ?? null;
+    $s = $data['settings'] ?? null;
+    $settingsData = (!empty($s['host']) && !empty($s['port']) && !empty($s['user']) && !empty($s['pass']) && !empty($s['encryption'])) ? $s : null;
+    $e = $data['email'] ?? null;
+    $emailData = (!empty($e['to']) && !empty($e['subject']) && !empty($e['body'])) ? $e : null;
   } catch (\Exception $e) {
     return new JsonResponse([
       'message' => 'Invalid JSON or empty body',
@@ -34,9 +36,9 @@ function sendEmail(Request $request) {
     ], Response::HTTP_BAD_REQUEST);
   }
 
-  if (empty($emailData['to']) || empty($emailData['subject']) || empty($emailData['body'])) {
+  if (!$settingsData || !$emailData) {
     return new JsonResponse([
-      'message' => 'Missing required fields: to, subject, body',
+      'message' => 'Missing settings or email data',
       'status' => 'error'
     ], Response::HTTP_BAD_REQUEST);
   }
