@@ -7,16 +7,17 @@ RUN apt-get update && apt-get install -y \
     git \
     libicu-dev \
     && docker-php-ext-configure intl \
-    && docker-php-ext-install zip intl
+    && docker-php-ext-install zip intl pdo pdo_mysql
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-COPY . /var/www/html/
+WORKDIR /var/www/html
+COPY . .
 
-RUN composer install --no-interaction --no-plugins --no-scripts --optimize-autoloader
+RUN composer clear-cache
+RUN composer install --no-interaction --optimize-autoloader --no-scripts --ignore-platform-reqs
 
 RUN chown -R www-data:www-data /var/www/html
-
 RUN a2enmod rewrite
 
 EXPOSE 80
